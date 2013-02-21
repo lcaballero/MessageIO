@@ -4,10 +4,13 @@
  */
 package messageio;
 
+import java.util.ArrayList;
 import messageio.parsing.MessagesListener;
 import messageio.parsing.MessagesParser;
+import messageio.parsing.MessagesParser.InputsContext;
 import messageio.parsing.MessagesParser.IoContext;
 import messageio.parsing.MessagesParser.MessageContext;
+import messageio.parsing.MessagesParser.OutputsContext;
 import messageio.parsing.MessagesParser.PropertyContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -17,55 +20,77 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  *
  * @author lucas.caballero
  */
-public class ParseEventRepeater implements MessagesListener {
+public class ParseListener implements MessagesListener {
+    
+    public StackList<Message> messages = new StackList<Message>();
 
     @Override
     public void enterMessage(MessageContext ctx) {
-        System.out.println("enterMessage");
+        Message m = new Message();
+        messages.add(m);
     }
 
     @Override
     public void exitMessage(MessageContext ctx) {
-        System.out.println("exit");
+        Message m = messages.last();
+        String text = ctx.ID().getText();
+        m.name = text;
     }
 
     @Override
     public void enterProperty(PropertyContext ctx) {
-        System.out.println("enterProperty");
+        Property p = new Property();
+        Message m = messages.last();
+        IPropertyContainer c = m.getContainer();
+        c.getProperties().add(p);
     }
 
     @Override
     public void exitProperty(PropertyContext ctx) {
-        System.out.println("enterProperty");
+        Property p = messages.last().getContainer().getProperties().last();
+        p.type = ctx.TYPE().getText();
+        p.name = ctx.ID().getText();
     }
 
     @Override
     public void enterIo(IoContext ctx) {
-        System.out.println("enterIo");
     }
 
     @Override
     public void exitIo(IoContext ctx) {
-        System.out.println("enterIo");
     }
 
     @Override
     public void visitTerminal(TerminalNode tn) {
-        System.out.println("visitTerminal");
     }
 
     @Override
     public void visitErrorNode(ErrorNode en) {
-        System.out.println("visitErrorNode");
     }
 
     @Override
     public void enterEveryRule(ParserRuleContext prc) {
-        System.out.println("enterEveryRule");
     }
 
     @Override
     public void exitEveryRule(ParserRuleContext prc) {
-        System.out.println("exitEveryRule");
     }    
+
+    @Override
+    public void enterInputs(InputsContext ctx) {
+        messages.last().inputs = new Inputs();
+    }
+
+    @Override
+    public void exitInputs(InputsContext ctx) {
+    }
+
+    @Override
+    public void enterOutputs(OutputsContext ctx) {
+        messages.last().outputs = new Outputs();
+    }
+
+    @Override
+    public void exitOutputs(OutputsContext ctx) {
+    }
 }
