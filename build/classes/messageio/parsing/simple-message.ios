@@ -1,5 +1,0 @@
-message SqlIO {
-  int Id;
-  string Name;
-  double DateOfBirth;
-}
