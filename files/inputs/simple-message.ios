@@ -1,0 +1,10 @@
+message SqlIO {
+   inputs SqlInputs {
+     int Id;
+  	 string Name;
+	 double DateOfBirth;
+   }
+   outputs SqlOutputs {
+     double Price;
+   }
+}

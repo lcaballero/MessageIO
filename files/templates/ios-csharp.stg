@@ -1,0 +1,20 @@
+messages(msg) ::= <<
+<inputClass(msg.inputs, msg.name)>
+<outputClass(msg.outputs, msg.name)>
+>>
+
+inputClass(ins, name) ::= <<
+public class <name>Inputs {
+   <ins.properties:properties(); separator="\n">
+}
+>>
+
+outputClass(ins, name) ::= <<
+public class <name>Outputs {
+   <ins.properties:properties(); separator="\n">
+}
+>>
+
+properties(props) ::= <<
+<props.type> <props.name>;
+>>
