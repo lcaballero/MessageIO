@@ -5,13 +5,18 @@
 package messageio;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import messageio.parsing.MessagesListener;
 import messageio.parsing.MessagesParser;
+import messageio.parsing.MessagesParser.FileContext;
 import messageio.parsing.MessagesParser.InputsContext;
-import messageio.parsing.MessagesParser.IoContext;
-import messageio.parsing.MessagesParser.MessageContext;
 import messageio.parsing.MessagesParser.OutputsContext;
 import messageio.parsing.MessagesParser.PropertyContext;
+import messageio.parsing.MessagesParser.ServiceContext;
+import messageio.parsing.MessagesParser.SetupContext;
+import messageio.parsing.MessagesParser.VersionContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -22,42 +27,34 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  */
 public class ParseListener implements MessagesListener {
     
-    public StackList<Message> messages = new StackList<Message>();
+    private Service service;
 
-    @Override
-    public void enterMessage(MessageContext ctx) {
-        Message m = new Message();
-        messages.add(m);
+    /**
+     * Get the value of service
+     *
+     * @return the value of service
+     */
+    public Service getService() {
+        return service;
     }
 
     @Override
-    public void exitMessage(MessageContext ctx) {
-        Message m = messages.last();
-        String text = ctx.ID().getText();
-        m.name = text;
+    public void enterService(ServiceContext ctx) {
+        service = new Service();
+    }
+
+    @Override
+    public void exitService(ServiceContext ctx) {
+        String text = ctx.Id().getText();
+        service.setName(text);
     }
 
     @Override
     public void enterProperty(PropertyContext ctx) {
-        Property p = new Property();
-        Message m = messages.last();
-        IPropertyContainer c = m.getContainer();
-        c.getProperties().add(p);
     }
 
     @Override
     public void exitProperty(PropertyContext ctx) {
-        Property p = messages.last().getContainer().getProperties().last();
-        p.type = ctx.TYPE().getText();
-        p.name = ctx.ID().getText();
-    }
-
-    @Override
-    public void enterIo(IoContext ctx) {
-    }
-
-    @Override
-    public void exitIo(IoContext ctx) {
     }
 
     @Override
@@ -78,19 +75,80 @@ public class ParseListener implements MessagesListener {
 
     @Override
     public void enterInputs(InputsContext ctx) {
-        messages.last().inputs = new Inputs();
+        
     }
 
     @Override
     public void exitInputs(InputsContext ctx) {
+        List<PropertyContext> list = ctx.property();
+        
+        Inputs ins = new Inputs();
+        service.setInputs(ins);
+        
+        if (list.size() > 0) {
+            ins.setProperties(new StackList<Property>());            
+        }
+
+        for (PropertyContext c : list) {
+            String type = c.Type().getText();
+            String name = c.Id().getText();
+            
+            Property p = new Property();
+            p.setType(type);
+            p.setName(name);
+            ins.getProperties().add(p);
+        }
     }
 
     @Override
     public void enterOutputs(OutputsContext ctx) {
-        messages.last().outputs = new Outputs();
     }
 
     @Override
     public void exitOutputs(OutputsContext ctx) {
+        List<PropertyContext> list = ctx.property();
+        
+        Outputs ins = new Outputs();
+        service.setOutputs(ins);        
+        
+        if (list.size() > 0) {
+            ins.setProperties(new StackList<Property>());            
+        }
+
+        for (PropertyContext c : list) {
+            String type = c.Type().getText();
+            String name = c.Id().getText();
+            
+            Property p = new Property();
+            p.setType(type);
+            p.setName(name);
+            ins.getProperties().add(p);
+        }
+    }
+
+    @Override
+    public void enterFile(FileContext ctx) {
+    }
+
+    @Override
+    public void exitFile(FileContext ctx) {
+    }
+
+    @Override
+    public void enterSetup(SetupContext ctx) {
+    }
+
+    @Override
+    public void exitSetup(SetupContext ctx) {
+    }
+
+    @Override
+    public void enterVersion(VersionContext ctx) {
+    }
+
+    @Override
+    public void exitVersion(VersionContext ctx) {
+        String ver = ctx.Triple().getText();
+        service.setVersion(ver);
     }
 }

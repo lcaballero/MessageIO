@@ -13,7 +13,7 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 import messageio.parsing.MessagesLexer;
 import messageio.parsing.MessagesParser;
-import messageio.parsing.MessagesParser.IoContext;
+import messageio.parsing.MessagesParser.FileContext;
 import messageio.stexamples.STExamples;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -49,48 +49,30 @@ public class Main {
         ParseListener repeater = new ParseListener();
         parser.addParseListener(repeater);
         
-        IoContext ctx = parser.io();
+        FileContext ctx = parser.file();
       
-        String name = repeater.messages.last().name;
+        String name = repeater.getService().getName();
         System.out.println(name);
         
         System.out.printf("\t%s-inputs", name);
         System.out.println();
         
-        for (Property p : repeater.messages.last().inputs.getProperties())
+        for (Property p : repeater.getService().getInputs().getProperties())
         {
-            System.out.printf("\t\t%s : %s", p.name, p.type);
+            System.out.printf("\t\t%s : %s", p.getName(), p.getType());
             System.out.println();
         }
         
         System.out.printf("\t%s-outputs", name);
         System.out.println();
         
-        for (Property p : repeater.messages.last().outputs.getProperties())
+        for (Property p : repeater.getService().getOutputs().getProperties())
         {
-            System.out.printf("\t\t%s : %s", p.name, p.type);
+            System.out.printf("\t\t%s : %s", p.getName(), p.getType());
             System.out.println();
         }
-        
-        example3(repeater.messages.get(0));
     }
-    
-    public static void example3(Message mgs) throws IOException {
-        STGroup group = new STGroupFile("files/templates/ios-csharp.stg");
-        ST st = group.getInstanceOf("messages");
-        
-        st.add("msg", mgs);
-        
-        System.out.println(st.render());
-    }
-    
-    public static String cwd() throws IOException
-    {
-        String current = new java.io.File( "." ).getCanonicalPath();
-        
-        return current;
-    }
-    
+   
     public static String toMessage(String file) throws IOException
     {
         String s =
@@ -99,13 +81,5 @@ public class Main {
                 Charset.defaultCharset());
 
         return s;
-    }
-
-    private static void runExamples() throws IOException {
-        new STExamples().example1();
-        new STExamples().example2a();
-        new STExamples().example3();
-        new STExamples().example4();
-        new STExamples().stackoverflow();
     }
 }

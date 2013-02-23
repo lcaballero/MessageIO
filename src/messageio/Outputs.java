@@ -9,8 +9,25 @@ package messageio;
  * @author Lucas Caballero
  */
 public class Outputs implements IPropertyContainer {
-    private StackList<Property> properties = new StackList<Property>();    
+
+    private StackList<Property> properties;
+
+    /**
+     * Get the value of properties
+     *
+     * @return the value of properties
+     */
     public StackList<Property> getProperties() {
         return properties;
     }
+
+    /**
+     * Set the value of properties
+     *
+     * @param properties new value of properties
+     */
+    public void setProperties(StackList<Property> properties) {
+        this.properties = properties;
+    }
+
 }

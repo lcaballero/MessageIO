@@ -4,26 +4,41 @@ grammar Messages;
 package messageio.parsing;
 }
 
-io : message*
-   ;
+// A file 
+file
+    : version? service
+    ;
+
+version
+    : 'version' Triple
+    ;
    
-message
-    : 'message' ID '{' inputs? outputs? '}'
+/* A message */
+service
+    : 'service' Id '{' setup? inputs? outputs? '}'
     ;
 
 inputs
-    : 'inputs' ID '{' property* '}'
+    : 'inputs' Id '{' setup? property* '}'
     ;
 
 outputs
-    : 'outputs' ID '{' property* '}'
+    : 'outputs' Id '{' setup? property* '}'
     ;
-  
+
+setup
+    : 'setup' Id '{' property* '}'
+    ;
+
 property
-    : TYPE ID ';'
+    : Type Id ';'
+    ;
+
+Triple
+    : Int '.' Int '.' Int
     ;
    
-TYPE
+Type
     : 'int'
     | 'int?'
     | 'double'
@@ -35,9 +50,67 @@ TYPE
     | 'string'
     ;
 
-ID : [a-zA-Z_]+
+StringLiteral
+    :   '"' (EscapeSequence | ~[\\\"\r\n])* '"'
+    ;
+
+Id : [a-zA-Z_]+
    ;
    
 
-WS : [ \t\r\n]+ -> skip
+Ws : [ \t\r\n]+ -> skip
    ;
+
+Int
+    :   '0'
+    |   [1-9][0-9]*
+    |   '0' [0-7]+
+    |   HexPrefix HexDigit+
+    ;
+
+fragment
+EscapeSequence
+    :   '\\' EscapeChar
+    ;
+
+fragment
+EscapeChar
+    : [btnfr]
+    | '"'
+    ;
+
+fragment
+HexPrefix
+    :   '0x' | '0X'
+    ;
+
+fragment
+HexDigit
+    :   ('0'..'9'|'a'..'f'|'A'..'F')
+    ;
+
+fragment
+LongSuffix
+    :   'l' | 'L'
+    ;
+
+fragment
+NonIntegerNumber
+    :   ('0' .. '9')+ '.' ('0' .. '9')* Exponent?
+    |   '.' ( '0' .. '9' )+ Exponent?
+    |   ('0' .. '9')+ Exponent
+    |   ('0' .. '9')+
+    |
+        HexPrefix (HexDigit )*
+        (    ()
+        |    ('.' (HexDigit )* )
+        )
+        ( 'p' | 'P' )
+        ( '+' | '-' )?
+        ( '0' .. '9' )+
+        ;
+
+fragment
+Exponent
+    :   ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
+    ;

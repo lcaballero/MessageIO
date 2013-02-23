@@ -1,4 +1,4 @@
-message SqlIO {
+service SqlIO {
    inputs SqlInputs {
      int Id;
   	 string Name;
