@@ -77,7 +77,7 @@ public class Main {
     {
         String s =
             Files.toString(
-                new File("files/inputs/" + file), 
+                new File("files/sample-files/" + file), 
                 Charset.defaultCharset());
 
         return s;
