@@ -1,19 +1,25 @@
 version 1.0.0
 
+/**
+ * Each function would have a message
+ */
 service AddUser {
 	setup {
 		Port = 80,
 		Machine = "www-opts301a"
 	}
-	inputs Id {
+	input Id {
 		setup {
+			// Setup properties/defaults (ex. Id of procedure).
+			// Comments here will be placed as comments in the code
+			// generated when processing this file.
 			Name1 = Value,
 			Name2 = Value,
 		}
 		[Primary, Increment] int Id;
 		[NotNull] string Name;
 	}
-	outputs Id {
+	output Id {
 		int Id;
 		int? Id;
 		string Name;

@@ -10,9 +10,12 @@ import java.util.List;
 import java.util.Set;
 import messageio.parsing.MessagesListener;
 import messageio.parsing.MessagesParser;
+import messageio.parsing.MessagesParser.AttributesContext;
+import messageio.parsing.MessagesParser.ConstantParamContext;
 import messageio.parsing.MessagesParser.FileContext;
 import messageio.parsing.MessagesParser.InputsContext;
 import messageio.parsing.MessagesParser.OutputsContext;
+import messageio.parsing.MessagesParser.PairContext;
 import messageio.parsing.MessagesParser.PropertyContext;
 import messageio.parsing.MessagesParser.ServiceContext;
 import messageio.parsing.MessagesParser.SetupContext;
@@ -27,7 +30,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  */
 public class ParseListener implements MessagesListener {
     
-    private Service service;
+    private Service service = new Service();
 
     /**
      * Get the value of service
@@ -40,7 +43,6 @@ public class ParseListener implements MessagesListener {
 
     @Override
     public void enterService(ServiceContext ctx) {
-        service = new Service();
     }
 
     @Override
@@ -86,13 +88,13 @@ public class ParseListener implements MessagesListener {
         service.setInputs(ins);
         
         if (list.size() > 0) {
-            ins.setProperties(new StackList<Property>());            
+            ins.setProperties(new ArrayList<Property>());            
         }
 
         for (PropertyContext c : list) {
             String type = c.Type().getText();
             String name = c.Id().getText();
-            
+
             Property p = new Property();
             p.setType(type);
             p.setName(name);
@@ -112,7 +114,7 @@ public class ParseListener implements MessagesListener {
         service.setOutputs(ins);        
         
         if (list.size() > 0) {
-            ins.setProperties(new StackList<Property>());            
+            ins.setProperties(new ArrayList<Property>());            
         }
 
         for (PropertyContext c : list) {
@@ -150,5 +152,29 @@ public class ParseListener implements MessagesListener {
     public void exitVersion(VersionContext ctx) {
         String ver = ctx.Triple().getText();
         service.setVersion(ver);
+    }
+
+    @Override
+    public void enterConstantParam(ConstantParamContext ctx) {
+    }
+
+    @Override
+    public void exitConstantParam(ConstantParamContext ctx) {
+    }
+
+    @Override
+    public void enterPair(PairContext ctx) {
+    }
+
+    @Override
+    public void exitPair(PairContext ctx) {
+    }
+
+    @Override
+    public void enterAttributes(AttributesContext ctx) {
+    }
+
+    @Override
+    public void exitAttributes(AttributesContext ctx) {
     }
 }

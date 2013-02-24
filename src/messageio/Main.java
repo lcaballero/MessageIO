@@ -37,7 +37,7 @@ public class Main {
     public static void parse() throws IOException {
         // TODO code application logic here
 
-        String simple = toMessage("simple-message.ios");
+        String simple = toMessage("sample-files/full-message.mio");
         StringReader in = new StringReader(simple);
         
         ANTLRInputStream input = new ANTLRInputStream(in);
@@ -51,33 +51,24 @@ public class Main {
         
         FileContext ctx = parser.file();
       
-        String name = repeater.getService().getName();
-        System.out.println(name);
+        Service service = repeater.getService();
+
+        System.out.println(toServiceFiles(service));
+    }
+    
+    public static String toServiceFiles(Service s) {
+        STGroup g = new STGroupFile("files/templates/service.stg");
+        ST t = g.getInstanceOf("serviceClasses");
+        t.add("service", s);
         
-        System.out.printf("\t%s-inputs", name);
-        System.out.println();
-        
-        for (Property p : repeater.getService().getInputs().getProperties())
-        {
-            System.out.printf("\t\t%s : %s", p.getName(), p.getType());
-            System.out.println();
-        }
-        
-        System.out.printf("\t%s-outputs", name);
-        System.out.println();
-        
-        for (Property p : repeater.getService().getOutputs().getProperties())
-        {
-            System.out.printf("\t\t%s : %s", p.getName(), p.getType());
-            System.out.println();
-        }
+        return t.render();
     }
    
     public static String toMessage(String file) throws IOException
     {
         String s =
             Files.toString(
-                new File("files/sample-files/" + file), 
+                new File("files/" + file), 
                 Charset.defaultCharset());
 
         return s;

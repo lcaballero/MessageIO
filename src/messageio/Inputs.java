@@ -4,20 +4,22 @@
  */
 package messageio;
 
+import java.util.List;
+
 /**
  *
  * @author Lucas Caballero
  */
 public class Inputs implements IPropertyContainer {
 
-    private StackList<Property> properties;
+    private List<Property> properties;
 
     /**
      * Get the value of properties
      *
      * @return the value of properties
      */
-    public StackList<Property> getProperties() {
+    public List<Property> getProperties() {
         return properties;
     }
 
@@ -26,7 +28,7 @@ public class Inputs implements IPropertyContainer {
      *
      * @param properties new value of properties
      */
-    public void setProperties(StackList<Property> properties) {
+    public void setProperties(List<Property> properties) {
         this.properties = properties;
     }
 }

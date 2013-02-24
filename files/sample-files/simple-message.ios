@@ -1,10 +1,10 @@
-service SqlIO {
-   inputs SqlInputs {
-     int Id;
-  	 string Name;
-	 double DateOfBirth;
-   }
-   outputs SqlOutputs {
-     double Price;
-   }
+service UserProfiles {
+    inputs SqlInputs {
+        int Id;
+        string Name;
+	double DateOfBirth;
+    }
+    outputs SqlOutputs {
+        double Price;
+    }
 }

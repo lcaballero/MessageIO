@@ -1,0 +1,28 @@
+serviceClasses(service) ::= <<
+
+// Version: <service.version>
+// Service: <service.name>
+
+namespace LucidEdge.SqlRequests
+{
+	<inputs(service.name, service.inputs)>
+
+	<outputs(service.name, service.outputs)>
+}
+>>
+
+inputs(name, outs) ::= <<
+public class <name>Inputs
+{
+	<outs.properties:props(); separator="\n">
+}
+>>
+
+outputs(name, ins) ::= <<
+public class <name>Outputs
+{
+	<ins.properties:props(); separator="\n">
+}
+>>
+
+props(p) ::= "public <p.type> <p.name> { get; set; }"

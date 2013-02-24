@@ -4,6 +4,8 @@
  */
 package messageio;
 
+import java.util.List;
+
 /**
  *
  * @author Lucas Caballero
@@ -48,5 +50,25 @@ public class Property {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    private List<String> attributes;
+
+    /**
+     * Get the value of attributes
+     *
+     * @return the value of attributes
+     */
+    public List<String> getAttributes() {
+        return attributes;
+    }
+
+    /**
+     * Set the value of attributes
+     *
+     * @param attributes new value of attributes
+     */
+    public void setAttributes(List<String> attributes) {
+        this.attributes = attributes;
     }
 }

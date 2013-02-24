@@ -27,11 +27,23 @@ outputs
     ;
 
 setup
-    : 'setup' Id '{' property* '}'
+    : 'setup' '{' pair? (',' pair)* ','? '}'
+    ;
+
+pair
+    : Id '=' constantParam
+    ;
+
+constantParam
+    : (Int|Id|StringLiteral)
     ;
 
 property
-    : Type Id ';'
+    : attributes? Type Id ';'
+    ;
+
+attributes
+    : '[' Id (',' Id)* ','? ']'
     ;
 
 Triple
@@ -47,6 +59,8 @@ Type
     | 'bool?'
     | 'DateTime'
     | 'DateTime?'
+    | 'DateTimeOffset'
+    | 'DateTimeOffset?'
     | 'string'
     ;
 
@@ -54,7 +68,7 @@ StringLiteral
     :   '"' (EscapeSequence | ~[\\\"\r\n])* '"'
     ;
 
-Id : [a-zA-Z_]+
+Id : [a-zA-Z_][a-zA-Z0-9_]*
    ;
    
 
@@ -112,5 +126,5 @@ NonIntegerNumber
 
 fragment
 Exponent
-    :   ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
+    :   [eE][+-]?[0-9]+
     ;

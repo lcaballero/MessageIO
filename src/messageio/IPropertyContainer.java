@@ -4,10 +4,12 @@
  */
 package messageio;
 
+import java.util.List;
+
 /**
  *
  * @author Lucas Caballero
  */
 public interface IPropertyContainer {
-    public StackList<Property> getProperties();   
+    public List<Property> getProperties();   
 }
