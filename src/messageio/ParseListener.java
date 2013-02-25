@@ -96,6 +96,7 @@ public class ParseListener implements MessagesListener {
             String name = c.Id().getText();
 
             Property p = new Property();
+            findAttributes(p, c.attributes());
             p.setType(type);
             p.setName(name);
             ins.getProperties().add(p);
@@ -122,9 +123,24 @@ public class ParseListener implements MessagesListener {
             String name = c.Id().getText();
             
             Property p = new Property();
+            findAttributes(p, c.attributes());
             p.setType(type);
             p.setName(name);
+
             ins.getProperties().add(p);
+        }
+    }
+    
+    private void findAttributes(Property p, AttributesContext ctx) {
+        
+        List<TerminalNode> atts = ctx != null ? ctx.Id() : null;
+        
+        if (atts != null && atts.size() > 0) {
+            List<String> list = new ArrayList<String>();
+            for (TerminalNode n : atts) {
+                list.add(n.getText());
+            }
+            p.setAttributes(list);
         }
     }
 

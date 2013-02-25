@@ -37,7 +37,7 @@ public class Main {
     public static void parse() throws IOException {
         // TODO code application logic here
 
-        String simple = toMessage("sample-files/full-message.mio");
+        String simple = toMessage("sample-files/readme-example.mio");
         StringReader in = new StringReader(simple);
         
         ANTLRInputStream input = new ANTLRInputStream(in);
@@ -57,7 +57,7 @@ public class Main {
     }
     
     public static String toServiceFiles(Service s) {
-        STGroup g = new STGroupFile("files/templates/service.stg");
+        STGroup g = new STGroupFile("files/templates/service-idatamapping.stg");
         ST t = g.getInstanceOf("serviceClasses");
         t.add("service", s);
         

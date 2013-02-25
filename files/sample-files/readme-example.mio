@@ -1,0 +1,16 @@
+version 1.0.0
+
+service AddUser {
+	inputs Id {
+		int Id;
+		string FirstName;
+		string LastName;
+	}
+	outputs Id {
+		int? Id;
+		string FirstName;
+		string LastName;
+		int? AddressId;
+		DateTime? DateOfBirth;
+	}
+}

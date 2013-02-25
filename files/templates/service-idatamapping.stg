@@ -1,4 +1,4 @@
-/* asldkjalsbkjas dl */
+/* Example comment -- just for making the tmLanguage file. */
 serviceClasses(service) ::= <<
 
 // Version: <service.version>
@@ -20,15 +20,17 @@ public class <name>Inputs
 >>
 
 outputs(name, ins) ::= <<
-public class <name>Outputs
+public class <name>Outputs : IDataMapping
 {
+	public IDictionary\<string,Datapoint>Map { get; set; }
+
 	<ins.properties:props(); separator="\n">
 }
 >>
 
 props(p) ::= <<
 <if(p.attributes)>// [<p.attributes:atts(); separator=", ">]
-<endif>public <p.type> <p.name> { get; set; }
+<endif>public <p.type> <p.name> { get { return Map["<p.name>"].ToValue\<<p.type>\>(); } }
 >>
 
 atts(a) ::= "<a>"
