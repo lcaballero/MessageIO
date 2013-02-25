@@ -65,3 +65,13 @@ namespace LucidEdge.SqlRequests
 1. Change the attribute syntax to [Attr] and not [Attr1,Attr2] just incase
 a future version might better use [Attr(p=v)].
 1. Create a template that will transform the Service file into a table creation sql script.  Possibly also an insert row .sql script as well.
+
+# Licesnse
+
+LucidEdge.MessageIO and LucidEdge.Service are release under the MIT License.
+
+Copyright 2013
+
+Read the license here: http://opensource.org/license/MIT
+
+Date: 2013-02-17
