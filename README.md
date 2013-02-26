@@ -36,10 +36,22 @@ service AddUser {
 
 namespace LucidEdge.SqlRequests
 {
+	public class AddUserInputs : IParameters
 	{
 		public int Id { get { return Map["Id"].ToValue<int>(); } }
 		public string FirstName { get { return Map["FirstName"].ToValue<string>(); } }
 		public string LastName { get { return Map["LastName"].ToValue<string>(); } }
+
+		public IDictionary<string,object> ToParameters()
+		{
+			return
+			new Dictionary<string,object>
+			{
+				{"Id", Id}
+				{"FirstName", FirstName}
+				{"LastName", LastName}
+			};
+		}
 	}
 
 	public class AddUserOutputs : IDataMapping

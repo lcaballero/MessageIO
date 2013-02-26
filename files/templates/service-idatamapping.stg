@@ -12,19 +12,32 @@ namespace LucidEdge.SqlRequests
 }
 >>
 
-inputs(name, outs) ::= <<
-public class <name>Inputs
+inputs(name, ins) ::= <<
+public class <name>Inputs : IParameters
 {
-	<outs.properties:props(); separator="\n">
+	<ins.properties:props(); separator="\n">
+
+	public IDictionary\<string,object> ToParameters()
+	{
+		return
+		new Dictionary\<string,object>
+		{
+			<ins.properties:mapped(); separator="\n">
+		};
+	}
 }
 >>
 
-outputs(name, ins) ::= <<
+mapped(p) ::= <<
+{"<p.name>", <p.name>}
+>>
+
+outputs(name, outs) ::= <<
 public class <name>Outputs : IDataMapping
 {
 	public IDictionary\<string,Datapoint>Map { get; set; }
 
-	<ins.properties:props(); separator="\n">
+	<outs.properties:props(); separator=",\n">
 }
 >>
 

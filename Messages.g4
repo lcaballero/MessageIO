@@ -71,7 +71,6 @@ StringLiteral
 Id : [a-zA-Z_][a-zA-Z0-9_]*
    ;
    
-
 Ws : [ \t\r\n]+ -> skip
    ;
 
