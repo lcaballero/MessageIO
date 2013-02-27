@@ -10,36 +10,40 @@ Given a file like the one below it might produce a C# file matching the code tha
 the example.
 
 ```CSharp
-
 version 1.0.0
 
-service AddUser {
-	inputs Id {
-		int Id;
-		string FirstName;
-		string LastName;
-	}
-	outputs Id {
-		int? Id;
-		string FirstName;
-		string LastName;
-		int? AddressId;
-		DateTime? DateOfBirth;
-	}
+[Inputs]
+[UserInfoService]
+message UserProfileInputs {
+	[Primary] int Id;
+	string FirstName;
+	string LastName;
 }
 
+[Outputs]
+[UserInfoService]
+message UserProfileOutputs {
+	[Primary] int? Id;
+	string FirstName;
+	string LastName;
+	int? AddressId;
+	DateTime? DateOfBirth;
+}
 ```
 
 ```CSharp
 // Version: 1.0.0
-// Service Call: AddUser
+// Service Call: 
 // Application: 
 // Port: 
 
 namespace LucidEdge.SqlRequests
 {
-	public class AddUserInputs : IParameterBuilder
+	// [Inputs]
+	// [UserInfoService]
+	public class Inputs : IParameterBuilder
 	{
+		// [Primary]
 		public int Id { get; set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
@@ -55,18 +59,54 @@ namespace LucidEdge.SqlRequests
 			};
 		}
 	}
-
-	public class AddUserOutputs : IDataMapping
+	// [Outputs]
+	// [UserInfoService]
+	public class Inputs : IParameterBuilder
 	{
-		public IDictionary<string,Datapoint> Map { get; set; }
+		// [Primary]
+		public int? Id { get; set; }
+		public string FirstName { get; set; }
+		public string LastName { get; set; }
+		public int? AddressId { get; set; }
+		public DateTime? DateOfBirth { get; set; }
 
-		public int? Id { get { return Map["Id"].ToInt(); } }
-		public string FirstName { get { return Map["FirstName"].ToString(); } }
-		public string LastName { get { return Map["LastName"].ToString(); } }
-		public int? AddressId { get { return Map["AddressId"].ToInt(); } }
-		public DateTime? DateOfBirth { get { return Map["DateOfBirth"].ToDateTime(); } }
+		public new List<DataPoint> ToParameters()
+		{
+			return
+			new List<DataPoint>
+			{
+				new DataPoint("Id", Id),
+				new DataPoint("FirstName", FirstName),
+				new DataPoint("LastName", LastName),
+				new DataPoint("AddressId", AddressId),
+				new DataPoint("DateOfBirth", DateOfBirth)
+			};
+		}
 	}
+
+
 }
+```
+
+
+```SQL
+-- Version: 1.0.0
+-- Service Call: 
+-- Application: 
+-- Port: 
+
+CREATE TABLE  (
+	Id int,
+	FirstName string,
+	LastName string
+);
+CREATE TABLE  (
+	Id int?,
+	FirstName string,
+	LastName string,
+	AddressId int?,
+	DateOfBirth DateTime?
+);
 ```
 
 # TODO
@@ -76,9 +116,13 @@ namespace LucidEdge.SqlRequests
 	1. Change the .bat paths.
 	1. Change the file extension.
 	1. Change the syntax highlighting extensions.
-1. Change the attribute syntax to [Attr] and not [Attr1,Attr2] just incase
-a future version might better use [Attr(p=v)].
 1. Create a template that will transform the Service file into a table creation sql script.  Possibly also an insert row .sql script as well.
+
+
+# DONE
+1. [DONE] Change the attribute syntax to [Attr] and not [Attr1,Attr2] just incase
+a future version might better use [Attr(p=v)].
+
 
 # Licesnse
 
