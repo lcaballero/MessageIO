@@ -6,7 +6,7 @@ package messageio.parsing;
 
 // A file 
 file
-    : version? service
+    : version? message*
     ;
 
 version
@@ -14,16 +14,8 @@ version
     ;
    
 /* A message */
-service
-    : 'service' Id '{' setup? inputs? outputs? '}'
-    ;
-
-inputs
-    : 'inputs' Id '{' setup? property* '}'
-    ;
-
-outputs
-    : 'outputs' Id '{' setup? property* '}'
+message
+    : attributes* 'message' Id '{' setup? property* '}'
     ;
 
 setup
@@ -39,11 +31,11 @@ constantParam
     ;
 
 property
-    : attributes? Type Id ';'
+    : attributes* Type Id ';'
     ;
 
 attributes
-    : '[' Id (',' Id)* ','? ']'
+    : '[' Id ']'
     ;
 
 Triple
@@ -75,15 +67,14 @@ Ws : [ \t\r\n]+ -> skip
    ;
 
 Int
-    :   '0'
-    |   [1-9][0-9]*
-    |   '0' [0-7]+
-    |   HexPrefix HexDigit+
+    : [1-9][0-9]*
+    | '0'
+    | HexPrefix HexDigit+
     ;
 
 fragment
 EscapeSequence
-    :   '\\' EscapeChar
+    : '\\' EscapeChar
     ;
 
 fragment
@@ -94,36 +85,28 @@ EscapeChar
 
 fragment
 HexPrefix
-    :   '0x' | '0X'
+    : '0' [xX]
     ;
 
 fragment
 HexDigit
-    :   ('0'..'9'|'a'..'f'|'A'..'F')
+    : [0-9a-fA-F]
     ;
 
 fragment
 LongSuffix
-    :   'l' | 'L'
+    : [lL]
     ;
 
 fragment
 NonIntegerNumber
-    :   ('0' .. '9')+ '.' ('0' .. '9')* Exponent?
-    |   '.' ( '0' .. '9' )+ Exponent?
-    |   ('0' .. '9')+ Exponent
-    |   ('0' .. '9')+
-    |
-        HexPrefix (HexDigit )*
-        (    ()
-        |    ('.' (HexDigit )* )
-        )
-        ( 'p' | 'P' )
-        ( '+' | '-' )?
-        ( '0' .. '9' )+
-        ;
+    : [0-9]+ '.' [0-9]* Exponent?
+    | '.' [0-9]+ Exponent?
+    | [0-9]+ Exponent
+    | [0-9]+
+    ;
 
 fragment
 Exponent
-    :   [eE][+-]?[0-9]+
+    : [eE][+-]?[0-9]+
     ;

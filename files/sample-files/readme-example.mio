@@ -1,16 +1,19 @@
 version 1.0.0
 
-service AddUser {
-	inputs Id {
-		int Id;
-		string FirstName;
-		string LastName;
-	}
-	outputs Id {
-		int? Id;
-		string FirstName;
-		string LastName;
-		int? AddressId;
-		DateTime? DateOfBirth;
-	}
+[Inputs]
+[UserInfoService]
+message UserProfileInputs {
+	[Primary] int Id;
+	string FirstName;
+	string LastName;
+}
+
+[Outputs]
+[UserInfoService]
+message UserProfileOutputs {
+	[Primary] int? Id;
+	string FirstName;
+	string LastName;
+	int? AddressId;
+	DateTime? DateOfBirth;
 }

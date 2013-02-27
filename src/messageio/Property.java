@@ -51,6 +51,29 @@ public class Property {
     public void setType(String type) {
         this.type = type;
     }
+    
+    /**
+     * Provides the name of the type but with the first letter capitalized
+     * so the it can be used in a location where Pascal Casing is expected.
+     * @return capitalized type name.
+     */
+    public String getMappedType() {
+        String s = getType();
+        if (s.length() > 0) {
+            s = s.substring(0, 1).toUpperCase() + s.substring(1);
+        }        
+        if (s.endsWith("?")) {
+            s = s.substring(0, s.length() - 1);
+        }
+        
+        return s;
+    }
+    
+    public String getPostgresType() {
+        String s = getType();
+        
+        return s;
+    }
 
     private List<String> attributes;
 

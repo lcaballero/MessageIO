@@ -51,15 +51,24 @@ public class Main {
         
         FileContext ctx = parser.file();
       
-        Service service = repeater.getService();
+        MessageFile file = repeater.getMessageFile();
 
-        System.out.println(toServiceFiles(service));
+        System.out.println(toServiceFiles(file));
+        System.out.println(toSql(file));
     }
     
-    public static String toServiceFiles(Service s) {
+    public static String toSql(MessageFile f) {
+        STGroup g = new STGroupFile("files/templates/sql-output-postgres.stg");
+        ST t = g.getInstanceOf("messageFile");
+        t.add("file", f);
+        
+        return t.render();
+    }
+    
+    public static String toServiceFiles(MessageFile f) {
         STGroup g = new STGroupFile("files/templates/service-idatamapping.stg");
-        ST t = g.getInstanceOf("serviceClasses");
-        t.add("service", s);
+        ST t = g.getInstanceOf("messageFile");
+        t.add("file", f);
         
         return t.render();
     }

@@ -32,37 +32,39 @@ service AddUser {
 
 ```CSharp
 // Version: 1.0.0
-// Service: AddUser
+// Service Call: AddUser
+// Application: 
+// Port: 
 
 namespace LucidEdge.SqlRequests
 {
-	public class AddUserInputs : IParameters
+	public class AddUserInputs : IParameterBuilder
 	{
-		public int Id { get { return Map["Id"].ToValue<int>(); } }
-		public string FirstName { get { return Map["FirstName"].ToValue<string>(); } }
-		public string LastName { get { return Map["LastName"].ToValue<string>(); } }
+		public int Id { get; set; }
+		public string FirstName { get; set; }
+		public string LastName { get; set; }
 
-		public IDictionary<string,object> ToParameters()
+		public new List<DataPoint> ToParameters()
 		{
 			return
-			new Dictionary<string,object>
+			new List<DataPoint>
 			{
-				{"Id", Id}
-				{"FirstName", FirstName}
-				{"LastName", LastName}
+				new DataPoint("Id", Id),
+				new DataPoint("FirstName", FirstName),
+				new DataPoint("LastName", LastName)
 			};
 		}
 	}
 
 	public class AddUserOutputs : IDataMapping
 	{
-		public IDictionary<string,Datapoint>Map { get; set; }
+		public IDictionary<string,Datapoint> Map { get; set; }
 
-		public int? Id { get { return Map["Id"].ToValue<int?>(); } }
-		public string FirstName { get { return Map["FirstName"].ToValue<string>(); } }
-		public string LastName { get { return Map["LastName"].ToValue<string>(); } }
-		public int? AddressId { get { return Map["AddressId"].ToValue<int?>(); } }
-		public DateTime? DateOfBirth { get { return Map["DateOfBirth"].ToValue<DateTime?>(); } }
+		public int? Id { get { return Map["Id"].ToInt(); } }
+		public string FirstName { get { return Map["FirstName"].ToString(); } }
+		public string LastName { get { return Map["LastName"].ToString(); } }
+		public int? AddressId { get { return Map["AddressId"].ToInt(); } }
+		public DateTime? DateOfBirth { get { return Map["DateOfBirth"].ToDateTime(); } }
 	}
 }
 ```

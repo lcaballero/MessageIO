@@ -1,0 +1,19 @@
+messageFile(file) ::= <<
+
+-- Version: <file.version>
+-- Service Call: <file.name>
+-- Application: <file.application>
+-- Port: <file.port>
+
+<file.messages:createTable(); separator="\n">
+>>
+
+createTable(m) ::= <<
+CREATE TABLE <m.name> (
+	<m.properties:fields(); separator=",\n">
+);
+>>
+
+fields(f) ::= <<
+<f.name> <f.postgresType>
+>>

@@ -13,11 +13,9 @@ import messageio.parsing.MessagesParser;
 import messageio.parsing.MessagesParser.AttributesContext;
 import messageio.parsing.MessagesParser.ConstantParamContext;
 import messageio.parsing.MessagesParser.FileContext;
-import messageio.parsing.MessagesParser.InputsContext;
-import messageio.parsing.MessagesParser.OutputsContext;
+import messageio.parsing.MessagesParser.MessageContext;
 import messageio.parsing.MessagesParser.PairContext;
 import messageio.parsing.MessagesParser.PropertyContext;
-import messageio.parsing.MessagesParser.ServiceContext;
 import messageio.parsing.MessagesParser.SetupContext;
 import messageio.parsing.MessagesParser.VersionContext;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -30,25 +28,24 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  */
 public class ParseListener implements MessagesListener {
     
-    private Service service = new Service();
+    private MessageFile messageFile;
 
     /**
-     * Get the value of service
+     * Get the value of messageFile
      *
-     * @return the value of service
+     * @return the value of messageFile
      */
-    public Service getService() {
-        return service;
+    public MessageFile getMessageFile() {
+        return messageFile;
     }
 
-    @Override
-    public void enterService(ServiceContext ctx) {
-    }
-
-    @Override
-    public void exitService(ServiceContext ctx) {
-        String text = ctx.Id().getText();
-        service.setName(text);
+    /**
+     * Set the value of messageFile
+     *
+     * @param messageFile new value of messageFile
+     */
+    public void setMessageFile(MessageFile messageFile) {
+        this.messageFile = messageFile;
     }
 
     @Override
@@ -76,76 +73,8 @@ public class ParseListener implements MessagesListener {
     }    
 
     @Override
-    public void enterInputs(InputsContext ctx) {
-        
-    }
-
-    @Override
-    public void exitInputs(InputsContext ctx) {
-        List<PropertyContext> list = ctx.property();
-        
-        Inputs ins = new Inputs();
-        service.setInputs(ins);
-        
-        if (list.size() > 0) {
-            ins.setProperties(new ArrayList<Property>());            
-        }
-
-        for (PropertyContext c : list) {
-            String type = c.Type().getText();
-            String name = c.Id().getText();
-
-            Property p = new Property();
-            findAttributes(p, c.attributes());
-            p.setType(type);
-            p.setName(name);
-            ins.getProperties().add(p);
-        }
-    }
-
-    @Override
-    public void enterOutputs(OutputsContext ctx) {
-    }
-
-    @Override
-    public void exitOutputs(OutputsContext ctx) {
-        List<PropertyContext> list = ctx.property();
-        
-        Outputs ins = new Outputs();
-        service.setOutputs(ins);        
-        
-        if (list.size() > 0) {
-            ins.setProperties(new ArrayList<Property>());            
-        }
-
-        for (PropertyContext c : list) {
-            String type = c.Type().getText();
-            String name = c.Id().getText();
-            
-            Property p = new Property();
-            findAttributes(p, c.attributes());
-            p.setType(type);
-            p.setName(name);
-
-            ins.getProperties().add(p);
-        }
-    }
-    
-    private void findAttributes(Property p, AttributesContext ctx) {
-        
-        List<TerminalNode> atts = ctx != null ? ctx.Id() : null;
-        
-        if (atts != null && atts.size() > 0) {
-            List<String> list = new ArrayList<String>();
-            for (TerminalNode n : atts) {
-                list.add(n.getText());
-            }
-            p.setAttributes(list);
-        }
-    }
-
-    @Override
     public void enterFile(FileContext ctx) {
+        messageFile = new MessageFile();
     }
 
     @Override
@@ -167,7 +96,7 @@ public class ParseListener implements MessagesListener {
     @Override
     public void exitVersion(VersionContext ctx) {
         String ver = ctx.Triple().getText();
-        service.setVersion(ver);
+        messageFile.setVersion(ver);
     }
 
     @Override
@@ -192,5 +121,55 @@ public class ParseListener implements MessagesListener {
 
     @Override
     public void exitAttributes(AttributesContext ctx) {
+    }
+
+    @Override
+    public void enterMessage(MessageContext ctx) {       
+        messageFile.getMessages().add(new Message());
+    }
+
+    @Override
+    public void exitMessage(MessageContext ctx) {
+        Message m = messageFile.lastMessage();
+        
+        List<PropertyContext> props = ctx.property();
+        
+        if (props != null && props.size() > 0) {
+            
+            List<Property> list = new ArrayList<Property>(); 
+            m.setProperties(list);            
+            
+            for (PropertyContext p : props) {
+                
+                Property newProp = new Property();
+                list.add(newProp);
+                
+                newProp.setName(p.Id().getText());
+                newProp.setType(p.Type().getText());
+                
+                List<AttributesContext> atts = p.attributes();
+                
+                if (atts != null && atts.size() > 0) {                    
+                    List<String> newAtts = new ArrayList<String>();
+                    newProp.setAttributes(newAtts);
+                    
+                    for (AttributesContext a : atts) {
+                        newAtts.add(a.Id().getText());
+                    }                  
+                }                
+            }
+        }
+        
+        List<AttributesContext> atts = ctx.attributes();
+        
+        if (atts != null && atts.size() > 0) {
+            
+            List<String> newAtts = new ArrayList<String>();
+            m.setAttributes(newAtts);
+            
+            for (AttributesContext a : atts) {
+                newAtts.add(a.Id().getText());
+            }
+        }
     }
 }

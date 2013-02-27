@@ -1,49 +1,62 @@
 /* Example comment -- just for making the tmLanguage file. */
-serviceClasses(service) ::= <<
+messageFile(file) ::= <<
 
-// Version: <service.version>
-// Service: <service.name>
+// Version: <file.version>
+// Service Call: <file.name>
+// Application: <file.application>
+// Port: <file.port>
 
 namespace LucidEdge.SqlRequests
 {
-	<inputs(service.name, service.inputs)>
+	<file.messages:message()>
 
-	<outputs(service.name, service.outputs)>
+	<file.outputs:message()>
 }
 >>
 
-inputs(name, ins) ::= <<
-public class <name>Inputs : IParameters
-{
-	<ins.properties:props(); separator="\n">
+message(m) ::= <<
+<if(m.attributes)><m.attributes:atts(); separator="\n">
+<endif><inputs(m.name, m.properties)>
 
-	public IDictionary\<string,object> ToParameters()
+>>
+
+inputs(name, properties) ::= <<
+public class <name>Inputs : IParameterBuilder
+{
+	<properties:prop(); separator="\n">
+
+	public new List\<DataPoint> ToParameters()
 	{
 		return
-		new Dictionary\<string,object>
+		new List\<DataPoint>
 		{
-			<ins.properties:mapped(); separator="\n">
+			<properties:mapped(); separator=",\n">
 		};
 	}
 }
 >>
 
+prop(p) ::= <<
+<if(p.attributes)><p.attributes:atts(); separator=", ">
+<endif>public <p.type> <p.name> { get; set; }
+>>
+
 mapped(p) ::= <<
-{"<p.name>", <p.name>}
+new DataPoint("<p.name>", <p.name>)
 >>
 
 outputs(name, outs) ::= <<
 public class <name>Outputs : IDataMapping
 {
-	public IDictionary\<string,Datapoint>Map { get; set; }
+	public IDictionary\<string,Datapoint> Map { get; set; }
 
-	<outs.properties:props(); separator=",\n">
+	<outs.properties:data(); separator="\n">
 }
 >>
 
-props(p) ::= <<
-<if(p.attributes)>// [<p.attributes:atts(); separator=", ">]
-<endif>public <p.type> <p.name> { get { return Map["<p.name>"].ToValue\<<p.type>\>(); } }
+data(p) ::= <<
+<if(p.attributes)><p.attributes:atts(); separator="\n">
+<endif>public <p.type> <p.name> { get { return Map["<p.name>"].To<p.mappedType>(); } }
 >>
 
-atts(a) ::= "<a>"
+atts(a) ::= "// [<a>]"
